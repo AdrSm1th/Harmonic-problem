@@ -4,8 +4,8 @@
 #include <fstream>
 #include "Mesh.h"
 
-void Mesh3D::CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, char dimName) {
-	if (q <= 0) throw std::invalid_argument("Invalid q" + dimName);
+void Mesh3D::CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, const char *dimName) {
+	if (q <= 0) throw std::invalid_argument(std::string("Invalid q") + dimName);
 	double h1 = (b - a) * (1 - q) / (1 - std::pow(q, n - 1));
 	dimension[0] = a;
 	for (int i = 1; i < n; i++) {
@@ -35,102 +35,105 @@ Mesh3D::Mesh3D(const char *filename)
 	elements_.resize((nxe * nye * nze), std::vector<int>(8));
 	boundaryFaces_.resize(2 * ((nxe * nye) + (nxe * nze) + (nye * nze)));
 
-	double hx = (bx - ax) / nx;
-	double hy = (by - ay) / ny;
-	double hz = (bz - az) / nz;
+	double hx = (bx - ax) / (nx - 1);
+	double hy = (by - ay) / (ny - 1);
+	double hz = (bz - az) / (nz - 1);
 
 	if (uniformX) {
-		for (int i = 0; i < nx - 1; x_[i++] = ax + hx * i);
+		for (int i = 0; i < nx - 1; x_[i] = ax + hx * i++);
 		x_[nx - 1] = bx;
 	}
-	else CalculateNonuniformDimension(x_, ax, bx, qx, nx, 'x');
+	else CalculateNonuniformDimension(x_, ax, bx, qx, nx, "x");
 	if (uniformY) {
-		for (int i = 0; i < ny - 1; y_[i++] = ay + hy * i);
+		for (int i = 0; i < ny - 1; y_[i] = ay + hy * i++);
 		y_[ny - 1] = by;
 	}
-	else CalculateNonuniformDimension(y_, ay, by, qy, ny, 'y');
+	else CalculateNonuniformDimension(y_, ay, by, qy, ny, "y");
 	if (uniformZ) {
-		for (int i = 0; i < nz - 1; z_[i++] = az + hz * i);
+		for (int i = 0; i < nz - 1; z_[i] = az + hz * i++);
 		z_[nz - 1] = bz;
 	}
-	else CalculateNonuniformDimension(z_, az, bz, qz, nz, 'z');
+	else CalculateNonuniformDimension(z_, az, bz, qz, nz, "z");
 
 	int fidx = 0;
-	for (int i = 0; i < nx - 1; i++) {
+	for (int k = 0; k < nz - 1; k++) {
 		for (int j = 0; j < ny - 1; j++) {
-			for (int k = 0; k < nz - 1; k++) {
+			for (int i = 0; i < nx - 1; i++) {
 				int nxy = nx * ny;
-				int idx = i + j * nxe + k * nxe * nye;
+				int eidx = i + j * nxe + k * nxe * nye;
+				int idx = i + j * nx + k * nx * ny;
 
-				elements_[idx][0] = idx;
-				elements_[idx][1] = idx + 1;
-				elements_[idx][2] = idx + nx;
-				elements_[idx][3] = idx + nx + 1;
-				elements_[idx][4] = idx + nxy;
-				elements_[idx][5] = idx + nxy;
-				elements_[idx][6] = idx + nxy + nx;
-				elements_[idx][7] = idx + nxy + nx + 1;
+				elements_[eidx][0] = idx;
+				elements_[eidx][1] = idx + 1;
+				elements_[eidx][2] = idx + nx;
+				elements_[eidx][3] = idx + nx + 1;
+				elements_[eidx][4] = idx + nxy;
+				elements_[eidx][5] = idx + nxy + 1;
+				elements_[eidx][6] = idx + nxy + nx;
+				elements_[eidx][7] = idx + nxy + nx + 1;
 
 				if (k == 0) {
-					boundaryFaces_[fidx].nodes[0] = i;
-					boundaryFaces_[fidx].nodes[1] = i + 1;
-					boundaryFaces_[fidx].nodes[2] = i + nx;
-					boundaryFaces_[fidx].nodes[3] = i + nx + 1;
-					boundaryFaces_[fidx].elementId = idx;
+					boundaryFaces_[fidx].nodes[0] = idx;
+					boundaryFaces_[fidx].nodes[1] = idx + 1;
+					boundaryFaces_[fidx].nodes[2] = idx + nx;
+					boundaryFaces_[fidx].nodes[3] = idx + nx + 1;
+					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 0;
 					fidx++;
 				}
 				if (j == 0) {
-					boundaryFaces_[fidx].nodes[0] = i;
-					boundaryFaces_[fidx].nodes[1] = i + 1;
-					boundaryFaces_[fidx].nodes[2] = i + nxy;
-					boundaryFaces_[fidx].nodes[3] = i + nxy + 1;
-					boundaryFaces_[fidx].elementId = idx;
+					boundaryFaces_[fidx].nodes[0] = idx;
+					boundaryFaces_[fidx].nodes[1] = idx + nx;
+					boundaryFaces_[fidx].nodes[2] = idx + nxy;
+					boundaryFaces_[fidx].nodes[3] = idx + nxy + nx;
+					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 1;
 					fidx++;
 				}
 				if (i == 0) {
-					boundaryFaces_[fidx].nodes[0] = i;
-					boundaryFaces_[fidx].nodes[1] = i + nx;
-					boundaryFaces_[fidx].nodes[2] = i + nxy;
-					boundaryFaces_[fidx].nodes[3] = i + nxy + 1;
-					boundaryFaces_[fidx].elementId = idx;
+					boundaryFaces_[fidx].nodes[0] = idx;
+					boundaryFaces_[fidx].nodes[1] = idx + 1;
+					boundaryFaces_[fidx].nodes[2] = idx + nxy;
+					boundaryFaces_[fidx].nodes[3] = idx + nxy + 1;
+
+					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 2;
 					fidx++;
 				}
 				if (k + 1 == nze) {
-					int s = (k + 1) * nx * ny;
-					boundaryFaces_[fidx].nodes[0] = s;
-					boundaryFaces_[fidx].nodes[1] = s + 1;
-					int s2 = s + ny;
-					boundaryFaces_[fidx].nodes[2] = s2;
-					boundaryFaces_[fidx].nodes[3] = s2 + 1;
-					boundaryFaces_[fidx].elementId = idx;
+					boundaryFaces_[fidx].nodes[0] = idx + nxy;
+					boundaryFaces_[fidx].nodes[1] = idx + nxy + 1;
+					boundaryFaces_[fidx].nodes[2] = idx + nxy + nx;
+					boundaryFaces_[fidx].nodes[3] = idx + nxy + nx + 1;
+					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 3;
 					fidx++;
 				}
 				if (j + 1 == nye) {
-					int s = (j + 1) * nx;
-					boundaryFaces_[fidx].nodes[0] = s;
-					boundaryFaces_[fidx].nodes[1] = s + 1;
-					int s2 = s + nx * ny;
-					boundaryFaces_[fidx].nodes[2] = s2;
-					boundaryFaces_[fidx].nodes[3] = s2 + 1;
-					boundaryFaces_[fidx].elementId = idx;
+					boundaryFaces_[fidx].nodes[0] = idx + nx;
+					boundaryFaces_[fidx].nodes[1] = idx + nx + 1;
+					boundaryFaces_[fidx].nodes[2] = idx + nxy + nx;
+					boundaryFaces_[fidx].nodes[3] = idx + nxy + nx + 1;
+					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 4;
 					fidx++;
 				}
 				if (i + 1 == nxe) {
-					int s = i + 1;
-					boundaryFaces_[fidx].nodes[0] = s;
-					boundaryFaces_[fidx].nodes[1] = s + nx;
-					int s2 = s + nx * ny;
-					boundaryFaces_[fidx].nodes[2] = s2;
-					boundaryFaces_[fidx].nodes[3] = s2 + 1;
-					boundaryFaces_[fidx].elementId = idx;
+					boundaryFaces_[fidx].nodes[0] = idx + 1;
+					boundaryFaces_[fidx].nodes[1] = idx + nx + 1;
+					boundaryFaces_[fidx].nodes[2] = idx + nxy + 1;
+					boundaryFaces_[fidx].nodes[3] = idx + nxy + nx + 1;
+					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 5;
 					fidx++;
 				}
+				//localFaceId:
+				//0 - bottom
+				//1 - backward
+				//2 - left
+				//3 - up
+				//4 - forward
+				//5 - rigth
 			}
 		}
 	}
@@ -139,11 +142,11 @@ Mesh3D::Mesh3D(const char *filename)
 }
 
 int Mesh3D::getNumNodes() {
-	return x_.size() * y_.size() * z_.size();
+	return (int)x_.size() * (int)y_.size() * (int)z_.size();
 }
 
 int Mesh3D::getNumElements() {
-	return elements_.size();
+	return (int)elements_.size();
 }
 
 double Mesh3D::getNodeCoord(int nodeId, int dimension) {
@@ -163,9 +166,9 @@ std::vector<int> Mesh3D::getElementNodes(int elementId) {
 
 double Mesh3D::getElementVolume(int elementId) {
 	std::vector<int> element = elements_[elementId];
-	double dx = x_[getNodeCoord(element[0], 0)] - x_[getNodeCoord(element[1], 0)];
-	double dy = y_[getNodeCoord(element[0], 1)] - y_[getNodeCoord(element[2], 1)];
-	double dz = z_[getNodeCoord(element[0], 2)] - z_[getNodeCoord(element[4], 2)];
+	double dx = getNodeCoord(element[0], 0) - getNodeCoord(element[1], 0);
+	double dy = getNodeCoord(element[0], 1) - getNodeCoord(element[2], 1);
+	double dz = getNodeCoord(element[0], 2) - getNodeCoord(element[4], 2);
 	return dx * dy * dz;
 }
 

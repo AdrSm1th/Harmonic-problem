@@ -19,7 +19,7 @@ private:
 	std::vector<std::vector<int>> elements_;
 	std::vector<Face> boundaryFaces_;
 
-	void CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, char dimName);
+	void CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, const char *dimName);
 public:
 	Mesh3D(const char *filename);
 	int getNumNodes();
