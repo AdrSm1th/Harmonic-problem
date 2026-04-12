@@ -11,21 +11,44 @@ struct Face {
 	int localFaceId;
 };
 
+struct Coefficients {
+	double lambda = 0;
+	double sigma = 0;
+	double chi = 0;
+	double omega = 0;
+};
+
+struct BoundaryCondition {
+	int type;
+	double u_s = 0;
+	double u_c = 0;
+	double theta_s = 0;
+	double theta_c = 0;
+	double beta = 0;
+	double ubeta_s = 0;
+	double ubeta_c = 0;
+};
+
 class Mesh3D {
 private:
 	std::vector<double> x_;
 	std::vector<double> y_;
 	std::vector<double> z_;
+	Coefficients coefficients_;
+	std::array<BoundaryCondition, 8> boundaryConditions_;
 	std::vector<std::vector<int>> elements_;
 	std::vector<Face> boundaryFaces_;
-
 	void CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, const char *dimName);
+
 public:
 	Mesh3D(const char *filename);
-	int getNumNodes();
-	int getNumElements();
-	double getNodeCoord(int nodeId, int dimension);
-	std::vector<int> getElementNodes(int elementId);
-	double getElementVolume(int elementId);
-	std::vector<Face> getBoundaryFaces();
+	void readCoefficients(const char *filename);
+	Coefficients getCoefficients() const;
+	void readBoundaryConditions(const char *filename);
+	int getNumNodes() const;
+	int getNumElements() const;
+	double getNodeCoord(int nodeId, int dimension) const;
+	std::vector<int> getElementNodes(int elementId) const;
+	double getElementVolume(int elementId) const;
+	std::vector<Face> getBoundaryFaces() const;
 };

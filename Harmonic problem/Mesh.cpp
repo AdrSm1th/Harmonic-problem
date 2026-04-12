@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 #include <fstream>
-#include "Mesh.h"
+#include "mesh.h"
 
 void Mesh3D::CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, const char *dimName) {
 	if (q <= 0) throw std::invalid_argument(std::string("Invalid q") + dimName);
@@ -141,17 +141,48 @@ Mesh3D::Mesh3D(const char *filename)
 	input.close();
 }
 
-int Mesh3D::getNumNodes() {
+void Mesh3D::readCoefficients(const char *filename) {
+	std::ifstream input(filename);
+	input >> coefficients_.lambda >> coefficients_.omega >> coefficients_.chi >> coefficients_.sigma;
+	input.close();
+}
+
+void Mesh3D::readBoundaryConditions(const char *filename) {
+	std::ifstream input(filename);
+	for (int i = 0; i < 8; i++)
+	{
+		input >> boundaryConditions_[i].type;
+
+		switch (boundaryConditions_[i].type) {
+		case 1:
+			input >> boundaryConditions_[i].u_s >> boundaryConditions_[i].u_c;
+			break;
+
+		case 2:
+			input >> boundaryConditions_[i].theta_s >> boundaryConditions_[i].theta_c;
+			break;
+
+		case 3:
+			input >> boundaryConditions_[i].beta >> boundaryConditions_[i].ubeta_s >> boundaryConditions_[i].ubeta_c;
+			break;
+		}
+	}
+}
+
+Coefficients Mesh3D::getCoefficients() const {
+	return coefficients_;
+}
+
+int Mesh3D::getNumNodes() const {
 	return (int)x_.size() * (int)y_.size() * (int)z_.size();
 }
 
-int Mesh3D::getNumElements() {
+int Mesh3D::getNumElements() const {
 	return (int)elements_.size();
 }
 
-double Mesh3D::getNodeCoord(int nodeId, int dimension) {
-	switch (dimension)
-	{
+double Mesh3D::getNodeCoord(int nodeId, int dimension) const {
+	switch (dimension) {
 	case 0: return x_[nodeId % x_.size()];
 	case 1: return y_[(nodeId / x_.size()) % y_.size()];
 	case 2: return z_[nodeId / (x_.size() * y_.size())];
@@ -160,11 +191,11 @@ double Mesh3D::getNodeCoord(int nodeId, int dimension) {
 	}
 }
 
-std::vector<int> Mesh3D::getElementNodes(int elementId) {
+std::vector<int> Mesh3D::getElementNodes(int elementId) const {
 	return elements_[elementId];
 }
 
-double Mesh3D::getElementVolume(int elementId) {
+double Mesh3D::getElementVolume(int elementId) const {
 	std::vector<int> element = elements_[elementId];
 	double dx = getNodeCoord(element[0], 0) - getNodeCoord(element[1], 0);
 	double dy = getNodeCoord(element[0], 1) - getNodeCoord(element[2], 1);
@@ -172,7 +203,6 @@ double Mesh3D::getElementVolume(int elementId) {
 	return dx * dy * dz;
 }
 
-std::vector<Face> Mesh3D::getBoundaryFaces()
-{
+std::vector<Face> Mesh3D::getBoundaryFaces() const {
 	return boundaryFaces_;
 }

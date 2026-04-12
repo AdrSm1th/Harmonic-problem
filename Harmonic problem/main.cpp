@@ -1,5 +1,5 @@
 ﻿#include <iostream>
-#include "Mesh.h"
+#include "mesh.h"
 
 int main()
 {
