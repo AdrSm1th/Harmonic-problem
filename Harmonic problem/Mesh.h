@@ -41,6 +41,7 @@ private:
 	void CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, const char *dimName);
 
 public:
+	Mesh3D();
 	Mesh3D(const char *filename);
 	void readCoefficients(const char *filename);
 	Coefficients getCoefficients() const;
@@ -52,3 +53,11 @@ public:
 	double getElementVolume(int elementId) const;
 	std::vector<Face> getBoundaryFaces() const;
 };
+
+double f_s(double x, double y, double z) {
+	return 0;
+}
+
+double f_c(double x, double y, double z) {
+	return 0;
+}

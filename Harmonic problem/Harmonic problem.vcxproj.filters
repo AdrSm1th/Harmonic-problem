@@ -27,7 +27,10 @@
     <ClCompile Include="quadrature.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
-    <ClCompile Include="harmonic assembler.cpp">
+    <ClCompile Include="assembler.cpp">
+      <Filter>Исходные файлы</Filter>
+    </ClCompile>
+    <ClCompile Include="sparse matrix.cpp">
       <Filter>Исходные файлы</Filter>
     </ClCompile>
   </ItemGroup>
@@ -41,7 +44,10 @@
     <ClInclude Include="quadrature.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="harmonic assembler.h">
+    <ClInclude Include="assembler.h">
+      <Filter>Файлы заголовков</Filter>
+    </ClInclude>
+    <ClInclude Include="sparse matrix.h">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
   </ItemGroup>

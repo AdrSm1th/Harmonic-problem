@@ -14,6 +14,10 @@ void Mesh3D::CalculateNonuniformDimension(std::vector<double> &dimension, double
 	}
 }
 
+Mesh3D::Mesh3D() {
+
+}
+
 Mesh3D::Mesh3D(const char *filename)
 {
 	std::ifstream input(filename);

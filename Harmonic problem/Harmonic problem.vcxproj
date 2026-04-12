@@ -124,16 +124,18 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="basis.cpp" />
-    <ClCompile Include="harmonic assembler.cpp" />
+    <ClCompile Include="assembler.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="quadrature.cpp" />
+    <ClCompile Include="sparse matrix.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="basis.h" />
-    <ClInclude Include="harmonic assembler.h" />
+    <ClInclude Include="assembler.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="quadrature.h" />
+    <ClInclude Include="sparse matrix.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
