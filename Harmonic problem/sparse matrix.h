@@ -90,16 +90,14 @@ public:
 		if (i < j) {
 			int idx = index(j, i);
 			if (idx == -1) {
-				Block b(0, 0);
-				return b;
+				throw std::invalid_argument("Element not found");
 			}
 			return au_[idx];
 		}
 		else if (j > i) {
 			int idx = index(i, j);
 			if (idx == -1) {
-				Block b(0, 0);
-				return b;
+				throw std::invalid_argument("Element not found");
 			}
 			return al_[idx];
 		}
