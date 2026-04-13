@@ -31,7 +31,7 @@ BlockCSRMatrix::BlockCSRMatrix(Mesh3D &mesh) {
 	au_.resize(ia_[ia_.size() - 1]);
 }
 
-void BlockCSRMatrix::addBlock(int row, int col, Block &block) {
+void BlockCSRMatrix::addBlock(int row, int col, Block block) {
 	(*this)(row, col) = block;
 }
 

@@ -15,6 +15,7 @@ void BCManager::ApplyDirichle() {
 		if (boundaryConditions_[i].type != 1) continue;
 		for (Face &face : boundaryFaces_) {
 			if (face.localFaceId != i) continue;
+			matrix_.addBlock(i, i, Block(1, 0));
 
 		}
 	}

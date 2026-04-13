@@ -61,7 +61,7 @@ private:
 public:
 	BlockCSRMatrix(Mesh3D &mesh);
 	BlockCSRMatrix() : ia_(std::vector<int>(0)) { };
-	void addBlock(int row, int col, Block &block);
+	void addBlock(int row, int col, Block block);
 	void multiply(std::vector<double> &x, std::vector<double> &y);
 	void convertToProfile();
 	void getLU();
