@@ -19,7 +19,7 @@ struct Coefficients {
 };
 
 struct BoundaryCondition {
-	int type;
+	int type = 0;
 	double u_s = 0;
 	double u_c = 0;
 	double theta_s = 0;
@@ -46,6 +46,7 @@ public:
 	void readCoefficients(const char *filename);
 	Coefficients getCoefficients() const;
 	void readBoundaryConditions(const char *filename);
+	std::array<BoundaryCondition, 8> getBoundaryConditions();
 	int getNumNodes() const;
 	int getNumElements() const;
 	double getNodeCoord(int nodeId, int dimension) const;

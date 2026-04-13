@@ -60,6 +60,7 @@ private:
 
 public:
 	BlockCSRMatrix(Mesh3D &mesh);
+	BlockCSRMatrix();
 	void addBlock(int row, int col, Block &block);
 	void multiply(std::vector<double> &x, std::vector<double> &y);
 	void convertToProfile();

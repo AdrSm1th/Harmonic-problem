@@ -173,6 +173,10 @@ void Mesh3D::readBoundaryConditions(const char *filename) {
 	}
 }
 
+std::array<BoundaryCondition, 8> Mesh3D::getBoundaryConditions() {
+	return boundaryConditions_;
+}
+
 Coefficients Mesh3D::getCoefficients() const {
 	return coefficients_;
 }
