@@ -151,32 +151,6 @@ void Mesh3D::readCoefficients(const char *filename) {
 	input.close();
 }
 
-void Mesh3D::readBoundaryConditions(const char *filename) {
-	std::ifstream input(filename);
-	for (int i = 0; i < 8; i++)
-	{
-		input >> boundaryConditions_[i].type;
-
-		switch (boundaryConditions_[i].type) {
-		case 1:
-			input >> boundaryConditions_[i].u_s >> boundaryConditions_[i].u_c;
-			break;
-
-		case 2:
-			input >> boundaryConditions_[i].theta_s >> boundaryConditions_[i].theta_c;
-			break;
-
-		case 3:
-			input >> boundaryConditions_[i].beta >> boundaryConditions_[i].ubeta_s >> boundaryConditions_[i].ubeta_c;
-			break;
-		}
-	}
-}
-
-std::array<BoundaryCondition, 8> Mesh3D::getBoundaryConditions() {
-	return boundaryConditions_;
-}
-
 Coefficients Mesh3D::getCoefficients() const {
 	return coefficients_;
 }

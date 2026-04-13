@@ -4,6 +4,7 @@
 
 #include <vector>
 #include <array>
+#include <functional>
 
 struct Face {
 	std::array<int, 4> nodes;
@@ -20,13 +21,7 @@ struct Coefficients {
 
 struct BoundaryCondition {
 	int type = 0;
-	double u_s = 0;
-	double u_c = 0;
-	double theta_s = 0;
-	double theta_c = 0;
 	double beta = 0;
-	double ubeta_s = 0;
-	double ubeta_c = 0;
 };
 
 class Mesh3D {
@@ -35,7 +30,6 @@ private:
 	std::vector<double> y_;
 	std::vector<double> z_;
 	Coefficients coefficients_;
-	std::array<BoundaryCondition, 8> boundaryConditions_;
 	std::vector<std::vector<int>> elements_;
 	std::vector<Face> boundaryFaces_;
 	void CalculateNonuniformDimension(std::vector<double> &dimension, double a, double b, double q, int n, const char *dimName);
@@ -45,8 +39,6 @@ public:
 	Mesh3D(const char *filename);
 	void readCoefficients(const char *filename);
 	Coefficients getCoefficients() const;
-	void readBoundaryConditions(const char *filename);
-	std::array<BoundaryCondition, 8> getBoundaryConditions();
 	int getNumNodes() const;
 	int getNumElements() const;
 	double getNodeCoord(int nodeId, int dimension) const;
