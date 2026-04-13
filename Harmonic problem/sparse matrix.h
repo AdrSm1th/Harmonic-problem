@@ -60,7 +60,7 @@ private:
 
 public:
 	BlockCSRMatrix(Mesh3D &mesh);
-	BlockCSRMatrix();
+	BlockCSRMatrix() : ia_(std::vector<int>(0)) { };
 	void addBlock(int row, int col, Block &block);
 	void multiply(std::vector<double> &x, std::vector<double> &y);
 	void convertToProfile();
@@ -70,16 +70,14 @@ public:
 		if (i < j) {
 			int idx = index(j, i);
 			if (idx == -1) {
-				Block b(0, 0);
-				return b;
+				throw std::invalid_argument("Element not found");
 			}
 			return au_[idx];
 		}
 		else if (j > i) {
 			int idx = index(i, j);
 			if (idx == -1) {
-				Block b(0, 0);
-				return b;
+				throw std::invalid_argument("Element not found");
 			}
 			return al_[idx];
 		}

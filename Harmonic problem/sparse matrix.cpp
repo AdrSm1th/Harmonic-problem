@@ -36,7 +36,7 @@ void BlockCSRMatrix::addBlock(int row, int col, Block &block) {
 }
 
 void BlockCSRMatrix::multiply(std::vector<double> &x, std::vector<double> &y) {
-	int n = di_.size();
+	int n = (int)di_.size();
 	std::fill(y.begin(), y.end(), 0.0);
 
 	for (int i = 0; i < n; ++i) {
@@ -98,7 +98,7 @@ int BlockCSRMatrix::index(int i, int j) const {
 }
 
 void BlockCSRMatrix::getLU() {
-	int n = di_.size();
+	int n = (int)di_.size();
 	for (int i = 1; i < n; i++) {
 		for (int k = ia_[i]; k < ia_[i + 1]; k++) {
 			//al

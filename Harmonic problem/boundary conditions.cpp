@@ -13,7 +13,7 @@ BCManager::BCManager(Mesh3D &mesh, const char *filename, BlockCSRMatrix &matrix)
 void BCManager::ApplyDirichle() {
 	for (int i = 0; i < 8; i++) {
 		if (boundaryConditions_[i].type != 1) continue;
-		for (Face face : boundaryFaces_) {
+		for (Face &face : boundaryFaces_) {
 			if (face.localFaceId != i) continue;
 
 		}
