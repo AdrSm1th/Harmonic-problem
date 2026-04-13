@@ -38,7 +38,7 @@ void HarmonicAssembler::ComputeLocalMatrices(int elemId) {
 				double zeta = points[izeta];
 				Basis3D bs(xi, eta, zeta);
 				std::array<double, 8> psi = bs.getBasisFunctions();
-				std::array<double, 8> dpsi_dxi, dpsi_deta, dpsi_dzeta = bs.getBasisDerivatives();
+				auto [dpsi_dxi, dpsi_deta, dpsi_dzeta] = bs.getBasisDerivatives();
 
 				double h = x2 - x1;
 				for (double &e : dpsi_dxi) {
@@ -67,8 +67,8 @@ void HarmonicAssembler::ComputeLocalMatrices(int elemId) {
 						y_global += psi[k] * mesh_.getNodeCoord(element[k], 1);
 						z_global += psi[k] * mesh_.getNodeCoord(element[k], 2);
 					}
-					b_local_[i].p += f_s(x_global, y_global, z_global) * psi[i] * detJ;
-					b_local_[i].c += f_c(x_global, y_global, z_global) * psi[i] * detJ;
+					b_local_[i].p += mesh_.f_s(x_global, y_global, z_global) * psi[i] * detJ;
+					b_local_[i].c += mesh_.f_c(x_global, y_global, z_global) * psi[i] * detJ;
 				}
 			}
 		}

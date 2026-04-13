@@ -52,12 +52,12 @@ public:
 	std::vector<int> getElementNodes(int elementId) const;
 	double getElementVolume(int elementId) const;
 	std::vector<Face> getBoundaryFaces() const;
+
+	double f_s(double x, double y, double z) {
+		return 0;
+	}
+
+	double f_c(double x, double y, double z) {
+		return 0;
+	}
 };
-
-double f_s(double x, double y, double z) {
-	return 0;
-}
-
-double f_c(double x, double y, double z) {
-	return 0;
-}
