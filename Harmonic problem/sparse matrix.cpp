@@ -35,26 +35,26 @@ void BlockCSRMatrix::addBlock(int row, int col, Block block) {
 	(*this)(row, col) = block;
 }
 
-void BlockCSRMatrix::multiply(std::vector<double> &x, std::vector<double> &y) {
+void BlockCSRMatrix::multiply(std::vector<BlockVector> &x, std::vector<BlockVector> &y) {
 	int n = (int)di_.size();
 	std::fill(y.begin(), y.end(), 0.0);
 
 	for (int i = 0; i < n; ++i) {
-		y[2 * i] += di_[i].p_ * x[2 * i] + di_[i].c_ * x[2 * i + 1];
-		y[2 * i + 1] += di_[i].c_ * x[2 * i] + di_[i].p_ * x[2 * i + 1];
+		y[i].p_ += di_[i].p_ * x[i].p_ + di_[i].c_ * x[i].c_;
+		y[i].c_ += di_[i].c_ * x[i].p_ + di_[i].p_ * x[i].c_;
 
 		for (int j_idx = ia_[i]; j_idx < ia_[i + 1]; ++j_idx) {
 			int j = ja_[j_idx];
 			if (i > j) {
 				const Block &block = al_[j_idx];
-				y[2 * i] += block.p_ * x[2 * j] + block.c_ * x[2 * j + 1];
-				y[2 * i + 1] += block.c_ * x[2 * j] + block.p_ * x[2 * j + 1];
+				y[i].p_ += block.p_ * x[j].p_ + block.c_ * x[j].c_;
+				y[i].c_ += block.c_ * x[j].p_ + block.p_ * x[j].c_;
 			}
 
 			else if (i < j) {
 				const Block &block = au_[j_idx];
-				y[2 * i] += block.p_ * x[2 * j] + block.c_ * x[2 * j + 1];
-				y[2 * i + 1] += block.c_ * x[2 * j] + block.p_ * x[2 * j + 1];
+				y[i].p_ += block.p_ * x[j].p_ + block.c_ * x[j].c_;
+				y[i].c_ += block.c_ * x[j].p_ + block.p_ * x[j].c_;
 			}
 		}
 	}

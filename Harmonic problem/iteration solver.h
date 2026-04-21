@@ -5,7 +5,6 @@
 #include <vector>
 #include <stdexcept>
 #include "sparse matrix.h"
-#include "assembler.h"
 
 //class MyVector {
 //private:
@@ -42,5 +41,5 @@ private:
 
 public:
 	LOSsolver(double eps) : eps_(eps) {}
-	void solve(BlockCSRMatrix &matrix, std::vector<double> &b, std::vector<double> &x);
+	void solve(BlockCSRMatrix &matrix, std::vector<BlockVector> &b, std::vector<BlockVector> &x);
 };

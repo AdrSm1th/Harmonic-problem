@@ -41,15 +41,18 @@ std::vector<BlockVector> LOSsolver::precondition(std::vector<Block> &M, std::vec
 //	return result;
 //}
 
-void LOSsolver::solve(BlockCSRMatrix &matrix, std::vector<double> &b, std::vector<double> &x) {
+void LOSsolver::solve(BlockCSRMatrix &matrix, std::vector<BlockVector> &b, std::vector<BlockVector> &x) {
 	int n = (int)b.size();
-	std::vector<Block> r(n), z(n), p(n), M(n);
+	std::vector<BlockVector> r(n), z(n), p(n);
+	std::vector<Block> M(n);
 	double a = 0, beta = 0, discrepancy = 1;
 
 	for (int i = 0; i < n; i++) {
 		M[i].p_ = sqrt(matrix(i, i).p_);
 		M[i].c_ = sqrt(matrix(i, i).c_);
 	}
+
+	r = precondition(M, b);
 	
 	//for (int i = 0; i < n; i++) {
 	//	r[i].

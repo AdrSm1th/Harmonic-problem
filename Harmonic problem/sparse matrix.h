@@ -60,6 +60,34 @@ public:
 	}
 };
 
+class BlockVector {
+public:
+	double p_;
+	double c_;
+	BlockVector() : p_(0), c_(0) {};
+	BlockVector(double p, double c) : p_(p), c_(c) {}
+
+	BlockVector &operator=(const BlockVector &other) = default;
+
+	BlockVector operator-(const Block &block) const {
+		return BlockVector(p_ - block.p_, c_ - block.c_);
+	}
+
+	BlockVector operator-=(const BlockVector &block) {
+		p_ -= block.p_;
+		c_ -= block.c_;
+		return *this;
+	}
+
+	BlockVector operator+(const BlockVector &block) const {
+		return BlockVector(p_ + block.p_, c_ + block.c_);
+	}
+
+	BlockVector operator*(double c) const {
+		return BlockVector(p_ * c, c_ * c);
+	}
+};
+
 class BlockCSRMatrix {
 private:
 	std::vector<Block> al_;
@@ -73,7 +101,7 @@ public:
 	BlockCSRMatrix(Mesh3D &mesh);
 	BlockCSRMatrix() : ia_(std::vector<int>(0)) { };
 	void addBlock(int row, int col, Block block);
-	void multiply(std::vector<double> &x, std::vector<double> &y);
+	void multiply(std::vector<BlockVector> &x, std::vector<BlockVector> &y);
 	void convertToProfile();
 	void getLU();
 
