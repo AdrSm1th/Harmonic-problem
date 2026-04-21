@@ -23,8 +23,18 @@ public:
 		return *this;
 	}
 
+	Block operator+(const Block &block) {
+		p_ += block.p_;
+		c_ += block.c_;
+		return *this;
+	}
+
 	Block operator*(const Block &block) const {
 		return Block(p_ * block.p_, c_ * block.c_);
+	}
+
+	Block operator*(const double &c) const {
+		return Block(p_ * c, c_ * c);
 	}
 
 	Block operator*=(const Block &block) {
