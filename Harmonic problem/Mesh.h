@@ -6,6 +6,8 @@
 #include <array>
 #include <functional>
 
+const double PI = 3.14159265358979323846;
+
 struct Face {
 	std::array<int, 4> nodes;
 	int elementId;
@@ -38,14 +40,17 @@ public:
 	int getNumElements() const;
 	double getNodeCoord(int nodeId, int dimension) const;
 	std::vector<int> getElementNodes(int elementId) const;
-	double getElementVolume(int elementId) const;
 	std::vector<Face> getBoundaryFaces() const;
 
 	double f_s(double x, double y, double z) {
-		return 0;
+		//return (3 * PI * PI - 1) * sin(PI * x) * sin(PI * y) * sin(PI * z);
+	   //return 0;
+		return -6 - 2 * x * x * z * z;
 	}
 
 	double f_c(double x, double y, double z) {
-		return 0;
+		//return sin(PI * x) * sin(PI * y) * sin(PI * z);
+		//return 0;
+		return 2 * y * y + z * z;
 	}
 };

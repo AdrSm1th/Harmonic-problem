@@ -15,12 +15,10 @@ public:
 
 class BCManager {
 private:
-	Mesh3D *mesh_;
-	BlockCSRMatrix matrix_;
+	Mesh3D mesh_;
 	std::vector<Face> boundaryFaces_;
-	std::vector<Block> b_;
 
 public:
-	BCManager(Mesh3D &mesh, const char *filename, BlockCSRMatrix &matrix, std::vector<Block> &b);
-	void ApplyDirichle();
+	BCManager(Mesh3D &mesh);
+	void ApplyDirichle(BlockCSRMatrix &matrix, std::vector<BlockVector> &b);
 };

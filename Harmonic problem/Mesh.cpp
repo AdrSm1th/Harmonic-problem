@@ -44,17 +44,17 @@ Mesh3D::Mesh3D(const char *filename)
 	double hz = (bz - az) / (nz - 1);
 
 	if (uniformX) {
-		for (int i = 0; i < nx - 1; x_[i] = ax + hx * i++);
+		for (int i = 0; i < nx - 1; x_[i] = ax + hx * i, i++);
 		x_[nx - 1] = bx;
 	}
 	else CalculateNonuniformDimension(x_, ax, bx, qx, nx, "x");
 	if (uniformY) {
-		for (int i = 0; i < ny - 1; y_[i] = ay + hy * i++);
+		for (int i = 0; i < ny - 1; y_[i] = ay + hy * i, i++);
 		y_[ny - 1] = by;
 	}
 	else CalculateNonuniformDimension(y_, ay, by, qy, ny, "y");
 	if (uniformZ) {
-		for (int i = 0; i < nz - 1; z_[i] = az + hz * i++);
+		for (int i = 0; i < nz - 1; z_[i] = az + hz * i, i++);
 		z_[nz - 1] = bz;
 	}
 	else CalculateNonuniformDimension(z_, az, bz, qz, nz, "z");
@@ -87,19 +87,18 @@ Mesh3D::Mesh3D(const char *filename)
 				}
 				if (j == 0) {
 					boundaryFaces_[fidx].nodes[0] = idx;
-					boundaryFaces_[fidx].nodes[1] = idx + nx;
+					boundaryFaces_[fidx].nodes[1] = idx + 1;
 					boundaryFaces_[fidx].nodes[2] = idx + nxy;
-					boundaryFaces_[fidx].nodes[3] = idx + nxy + nx;
+					boundaryFaces_[fidx].nodes[3] = idx + nxy + 1;
 					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 1;
 					fidx++;
 				}
 				if (i == 0) {
 					boundaryFaces_[fidx].nodes[0] = idx;
-					boundaryFaces_[fidx].nodes[1] = idx + 1;
+					boundaryFaces_[fidx].nodes[1] = idx + nx;
 					boundaryFaces_[fidx].nodes[2] = idx + nxy;
-					boundaryFaces_[fidx].nodes[3] = idx + nxy + 1;
-
+					boundaryFaces_[fidx].nodes[3] = idx + nxy + nx;
 					boundaryFaces_[fidx].elementId = eidx;
 					boundaryFaces_[fidx].localFaceId = 2;
 					fidx++;
@@ -175,14 +174,6 @@ double Mesh3D::getNodeCoord(int nodeId, int dimension) const {
 
 std::vector<int> Mesh3D::getElementNodes(int elementId) const {
 	return elements_[elementId];
-}
-
-double Mesh3D::getElementVolume(int elementId) const {
-	std::vector<int> element = elements_[elementId];
-	double dx = getNodeCoord(element[0], 0) - getNodeCoord(element[1], 0);
-	double dy = getNodeCoord(element[0], 1) - getNodeCoord(element[2], 1);
-	double dz = getNodeCoord(element[0], 2) - getNodeCoord(element[4], 2);
-	return dx * dy * dz;
 }
 
 std::vector<Face> Mesh3D::getBoundaryFaces() const {

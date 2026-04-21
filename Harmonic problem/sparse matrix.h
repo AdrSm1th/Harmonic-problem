@@ -24,9 +24,7 @@ public:
 	}
 
 	Block operator+(const Block &block) {
-		p_ += block.p_;
-		c_ += block.c_;
-		return *this;
+		return Block(p_ + block.p_, c_ + block.c_);
 	}
 
 	Block operator*(const Block &block) const {
@@ -101,6 +99,7 @@ public:
 	BlockCSRMatrix(Mesh3D &mesh);
 	BlockCSRMatrix() : ia_(std::vector<int>(0)) { };
 	void addBlock(int row, int col, Block block);
+	void changeBlock(int row, int col, Block block);
 	void multiply(std::vector<BlockVector> &x, std::vector<BlockVector> &y);
 	void convertToProfile();
 	void getLU();
@@ -113,7 +112,7 @@ public:
 			}
 			return au_[idx];
 		}
-		else if (j > i) {
+		else if (i > j) {
 			int idx = index(i, j);
 			if (idx == -1) {
 				throw std::invalid_argument("Element not found");

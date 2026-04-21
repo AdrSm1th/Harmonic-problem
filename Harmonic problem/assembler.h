@@ -12,14 +12,14 @@ private:
 	Mesh3D mesh_;
 	Quadrature quadrature_;
 	Coefficients coefficients_;
-	BlockCSRMatrix matrix_;
-	std::vector<BlockVector> global_b_;
 
 	std::array<Block, 64> A_local_ = {};
 	std::array<BlockVector, 8> b_local_ = {};
 
-public:
-	HarmonicAssembler(Mesh3D &mesh, BlockCSRMatrix &matrix, std::vector<BlockVector> &global_b);
 	void computeLocalMatrices(int elemId);
-	void addToGlobalMatrix();
+
+public:
+	HarmonicAssembler(Mesh3D &mesh);
+
+	void assembleSystem(BlockCSRMatrix &matrix, std::vector<BlockVector> &global_b);
 };

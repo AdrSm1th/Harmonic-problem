@@ -3,10 +3,8 @@
 #include "assembler.h"
 #include "basis.h"
 
-HarmonicAssembler::HarmonicAssembler(Mesh3D &mesh, BlockCSRMatrix &matrix, std::vector<BlockVector> &global_b) {
+HarmonicAssembler::HarmonicAssembler(Mesh3D &mesh) {
 	mesh_ = mesh;
-	matrix_ = matrix;
-	global_b_ = global_b;
 	coefficients_ = mesh_.getCoefficients();
 }
 
@@ -60,7 +58,7 @@ void HarmonicAssembler::computeLocalMatrices(int elemId) {
 				for (int i = 0; i < 8; i++) {
 					for (int j = 0; j < 8; j++) {
 						double dot = dpsi_dxi[i] * dpsi_dxi[j] + dpsi_deta[i] * dpsi_deta[j] + dpsi_dzeta[i] * dpsi_dzeta[j];
-						A_local_[i * 8 + j].p_ += (coefficients_.lambda * dot - coefficients_.omega * coefficients_.omega * psi[i] * psi[j]) * detJ;
+						A_local_[i * 8 + j].p_ += (coefficients_.lambda * dot - coefficients_.omega * coefficients_.omega * coefficients_.chi * psi[i] * psi[j]) * detJ;
 						A_local_[i * 8 + j].c_ += coefficients_.sigma * coefficients_.omega * psi[i] * psi[j] * detJ;
 					}
 					double x_global = 0, y_global = 0, z_global = 0;
@@ -77,18 +75,20 @@ void HarmonicAssembler::computeLocalMatrices(int elemId) {
 	}
 }
 
-void HarmonicAssembler::addToGlobalMatrix() {
+void HarmonicAssembler::assembleSystem(BlockCSRMatrix &matrix, std::vector<BlockVector> &global_b) {
 	for (int k = 0; k < mesh_.getNumElements(); k++) {
 		std::vector<int> element = mesh_.getElementNodes(k);
 		computeLocalMatrices(k);
 		for (int i = 0; i < 8; i++) {
 			int global_i = element[i];
-			global_b_[global_i].p_ += b_local_[i].p_;
-			global_b_[global_i].c_ += b_local_[i].c_;
+			global_b[global_i].p_ += b_local_[i].p_;
+			global_b[global_i].c_ += b_local_[i].c_;
 			
 			for (int j = 0; j < 8; j++) {
 				int global_j = element[j];
-				matrix_.addBlock(global_i, global_j, A_local_[i * 8 + j]);
+				matrix.addBlock(global_i, global_j, A_local_[i * 8 + j]);
+				A_local_[j * 8 + i].c_ *= -1;
+				matrix.addBlock(global_j, global_i, A_local_[j * 8 + i]);
 			}
 		}
 	}
