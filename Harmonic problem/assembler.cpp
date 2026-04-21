@@ -83,7 +83,7 @@ void HarmonicAssembler::assembleSystem(BlockCSRMatrix &matrix, std::vector<Block
 			int global_i = element[i];
 			global_b[global_i].p_ += b_local_[i].p_;
 			global_b[global_i].c_ += b_local_[i].c_;
-			
+
 			for (int j = 0; j < 8; j++) {
 				int global_j = element[j];
 				matrix.addBlock(global_i, global_j, A_local_[i * 8 + j]);
