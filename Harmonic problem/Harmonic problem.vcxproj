@@ -127,6 +127,7 @@
     <ClCompile Include="basis.cpp" />
     <ClCompile Include="assembler.cpp" />
     <ClCompile Include="boundary conditions.cpp" />
+    <ClCompile Include="iteration solver.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="mesh.cpp" />
     <ClCompile Include="quadrature.cpp" />
@@ -136,6 +137,7 @@
     <ClInclude Include="basis.h" />
     <ClInclude Include="assembler.h" />
     <ClInclude Include="boundary conditions.h" />
+    <ClInclude Include="iteration solver.h" />
     <ClInclude Include="mesh.h" />
     <ClInclude Include="quadrature.h" />
     <ClInclude Include="sparse matrix.h" />

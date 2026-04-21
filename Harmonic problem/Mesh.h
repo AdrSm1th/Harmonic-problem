@@ -19,11 +19,6 @@ struct Coefficients {
 	double omega = 0;
 };
 
-struct BoundaryCondition {
-	int type = 0;
-	double beta = 0;
-};
-
 class Mesh3D {
 private:
 	std::vector<double> x_;

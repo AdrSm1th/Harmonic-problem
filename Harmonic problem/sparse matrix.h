@@ -3,6 +3,7 @@
 #pragma once
 
 #include <vector>
+#include <stdexcept>
 #include "mesh.h"
 
 class Block {
