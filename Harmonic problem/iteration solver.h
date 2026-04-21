@@ -5,6 +5,7 @@
 #include <vector>
 #include <stdexcept>
 #include "sparse matrix.h"
+#include "assembler.h"
 
 //class MyVector {
 //private:
@@ -34,12 +35,12 @@
 class LOSsolver {
 private:
 	double eps_;
-	std::vector<Block> precondition(std::vector<Block> &M, std::vector<Block> &vector) const;
-	double dotProduct(std::vector<Block> &v1, std::vector<Block> &v2) const;
-	std::vector<Block> VplusV(std::vector<Block> &v1, std::vector<Block> &v2) const;
-	std::vector<Block> CmultV(double &c, std::vector<Block> &v) const;
+	std::vector<BlockVector> precondition(std::vector<Block> &M, std::vector<BlockVector> &vector) const;
+	//double dotProduct(std::vector<Block> &v1, std::vector<Block> &v2) const;
+	//std::vector<Block> VplusV(std::vector<Block> &v1, std::vector<Block> &v2) const;
+	//std::vector<Block> CmultV(double &c, std::vector<Block> &v) const;
 
 public:
 	LOSsolver(double eps) : eps_(eps) {}
-	void solve(BlockCSRMatrix &matrix, std::vector<Block> &b, std::vector<double> &x);
+	void solve(BlockCSRMatrix &matrix, std::vector<double> &b, std::vector<double> &x);
 };
