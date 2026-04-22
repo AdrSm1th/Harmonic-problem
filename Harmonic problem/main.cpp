@@ -1,4 +1,5 @@
 ﻿#include <iostream>
+#include <fstream>
 #include "mesh.h"
 #include "sparse matrix.h"
 #include "assembler.h"
@@ -20,12 +21,14 @@ int main()
       LOSsolver solver(1e-15, 1000);
       solver.solve(matrix, b, x);
 
+      std::ofstream ofs("disc.txt");
+
       double maxdxs = 0, maxdxc = 0;
       for (int i = 0; i < mesh.getNumNodes(); i++) {
          double xc = mesh.getNodeCoord(i, 0), y = mesh.getNodeCoord(i, 1), z = mesh.getNodeCoord(i, 2);
          double us = BoundaryFunctions::u_s(xc, y, z), uc = BoundaryFunctions::u_c(xc, y, z);
          //std::cout << x[i].p_ << " " << x[i].c_ << " " << us << " " << uc << " " << x[i].p_ - us << " " << x[i].c_ - uc << std::endl;
-         //std::cout << x[i].p_ - us << " " << x[i].c_ - uc << std::endl;
+         ofs << x[i].p_ - us << " " << x[i].c_ - uc << std::endl;
 
          double dxs = abs(x[i].p_ - us);
          if (maxdxs < dxs) maxdxs = dxs;

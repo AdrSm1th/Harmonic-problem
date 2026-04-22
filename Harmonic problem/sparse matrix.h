@@ -48,7 +48,7 @@ public:
 
 	Block operator/=(const Block &block) {
 		p_ = (p_ * block.p_ + c_ * block.c_) / (block.p_ * block.p_ + block.c_ * block.c_);
-		c_ = (p_ * block.c_ - block.p_ * c_) / (block.p_ * block.p_ + block.c_ * block.c_);
+		c_ = (c_ * block.p_ - p_ * block.c_) / (block.p_ * block.p_ + block.c_ * block.c_);
 		return *this;
 	}
 

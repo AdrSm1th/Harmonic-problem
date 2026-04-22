@@ -12,7 +12,7 @@ BCManager::BCManager(Mesh3D &mesh) {
 }
 
 void BCManager::ApplyDirichle(BlockCSRMatrix &matrix, std::vector<BlockVector> &b) {
-	for (int i = 0; i < 8; i++) {
+	for (int i = 0; i < 6; i++) {
 		for (Face &face : boundaryFaces_) {
 			if (face.localFaceId != i) continue;
 			for (int j = 0; j < 4; j++) {
