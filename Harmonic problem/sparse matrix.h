@@ -95,12 +95,16 @@ public:
 
 class BlockCSRMatrix {
 private:
+	std::vector<Block> al_profile_;
+	std::vector<Block> au_profile_;
+	std::vector<int> ia_profile_;
+	std::vector<int> firstCol_;
+	std::vector<Block> diag_original_;
 	std::vector<Block> al_;
 	std::vector<Block> au_;
 	std::vector<Block> di_;
 	std::vector<int> ia_;
 	std::vector<int> ja_;
-	std::vector<int> firstCol_;   // первый столбец профиля для каждой строки
 	int index(int i, int j) const;
 
 public:
@@ -110,7 +114,9 @@ public:
 	void changeBlock(int row, int col, Block block);
 	void multiply(std::vector<BlockVector> &x, std::vector<BlockVector> &y);
 	int getSize();
-	void solve(std::vector<BlockVector> &b, std::vector<BlockVector> &x);
+	void convertToProfile();
+	void LUdecomposeProfile();
+	void solveProfileLU(std::vector<BlockVector> &b, std::vector<BlockVector> &x);
 
 	Block& operator()(int i, int j) {
 		if (i < j) {

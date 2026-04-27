@@ -43,12 +43,16 @@ public:
 	std::vector<Face> getBoundaryFaces() const;
 
 	double f_s(double x, double y, double z) {
-		return -coefficients_.omega * coefficients_.omega * coefficients_.chi * (x + y + z);
+		return (3 * coefficients_.lambda * PI * PI - coefficients_.omega * coefficients_.omega * coefficients_.chi) * (sin(PI * x) * sin(PI * y) * sin(PI * z)) -
+			coefficients_.omega * coefficients_.sigma * (cos(PI * x) * cos(PI * y) * cos(PI * z));
+		//return -(coefficients_.omega * coefficients_.sigma + coefficients_.omega * coefficients_.omega * coefficients_.chi) * (x + y + z);
 		//return -6 * coefficients_.lambda - coefficients_.omega * coefficients_.sigma * (x * x - y * y) - coefficients_.omega * coefficients_.omega * coefficients_.chi * (x * x + y * y + z * z);
 	}
 
 	double f_c(double x, double y, double z) {
-		return coefficients_.omega * coefficients_.sigma * (x + y + z);
+		return (3 * coefficients_.lambda * PI * PI - coefficients_.omega * coefficients_.omega * coefficients_.chi) * (cos(PI * x) * cos(PI * y) * cos(PI * z)) +
+			coefficients_.omega * coefficients_.sigma * (sin(PI * x) * sin(PI * y) * sin(PI * z));
+		//return (coefficients_.omega * coefficients_.sigma - coefficients_.omega * coefficients_.omega * coefficients_.chi) * (x + y + z);
 		//return coefficients_.omega * coefficients_.sigma * (x * x + y * y + z * z) - coefficients_.omega * coefficients_.omega * coefficients_.chi * (x * x - y * y);
 	}
 };

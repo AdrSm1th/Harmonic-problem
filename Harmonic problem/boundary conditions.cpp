@@ -30,14 +30,15 @@ void BCManager::ApplyDirichle(BlockCSRMatrix &matrix, std::vector<BlockVector> &
 }
 
 double BoundaryFunctions::u_s(double x, double y, double z) {
-	//return sin(PI * x) * sin(PI * y) * sin(PI * z);
-	return x + y + z;
+	return sin(PI * x) * sin(PI * y) * sin(PI * z);
+	//return x + y + z;
 	//return 0;
 	//return x * x + y * y + z * z;
 }
 
 double BoundaryFunctions::u_c(double x, double y, double z) {
-	return 0;
+	return cos(PI * x) * cos(PI * y) * cos(PI * z);
+	//return 0;
 	//return x + y + z;
 	//return x * x - y * y;
 }

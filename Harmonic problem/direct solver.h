@@ -3,6 +3,7 @@
 #pragma once
 
 #include <vector>	
+#include <utility>
 #include "sparse matrix.h"
 
 class GaussSolver {

@@ -146,7 +146,7 @@ Mesh3D::Mesh3D(const char *filename)
 
 void Mesh3D::readCoefficients(const char *filename) {
 	std::ifstream input(filename);
-	input >> coefficients_.lambda >> coefficients_.omega >> coefficients_.chi >> coefficients_.sigma;
+	input >> coefficients_.lambda >> coefficients_.omega  >> coefficients_.sigma >> coefficients_.chi;
 	input.close();
 }
 

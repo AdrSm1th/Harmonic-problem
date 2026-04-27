@@ -69,7 +69,7 @@ void LOSsolver::solve(BlockCSRMatrix &matrix, std::vector<BlockVector> &b, std::
 		x = VplusV(x, az);
 
 		discrepancy = sqrt(dotProduct(r, r)) / sqrt(dotProduct(b, b));
-		std::cout << "i: " << i << " " << discrepancy << std::endl;
+		//std::cout << "i: " << i << " " << discrepancy << std::endl;
 		double ma = -a;
 		std::vector<BlockVector> map = CmultV(ma, p);
 		r = VplusV(r, map);

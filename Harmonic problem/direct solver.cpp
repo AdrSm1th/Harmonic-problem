@@ -1,6 +1,7 @@
 //direct solver.cpp
 
 #include <cmath>
+#include <stdexcept>
 #include <algorithm>
 #include "direct solver.h"
 
@@ -9,8 +10,6 @@ inline double abs2(const Block &a) {
 }
 
 inline void sub_mul(BlockVector &target, const Block &coeff, const BlockVector &src) {
-   // target -= coeff * src
-   // (p + i c) * (src.p + i src.c) = (p*src.p - c*src.c) + i(p*src.c + c*src.p)
    target.p_ -= coeff.p_ * src.p_ - coeff.c_ * src.c_;
    target.c_ -= coeff.p_ * src.c_ + coeff.c_ * src.p_;
 }
@@ -38,7 +37,6 @@ void GaussSolver::solve(BlockCSRMatrix &matrix, std::vector<BlockVector> &b, std
       }
    }
 
-   // Обратный ход
    x.resize(n);
    for (int i = n - 1; i >= 0; --i) {
       BlockVector sum = b[i];

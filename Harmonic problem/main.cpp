@@ -21,13 +21,23 @@ int main()
       bcmanager.ApplyDirichle(matrix, b);
       std::vector<BlockVector> x(mesh.getNumNodes());
 
+      LOSsolver solverlos(1e-15, 10000);
+      GaussSolver solvergauss;
+
+      int choice = 0;
+      std::cin >> choice;
+
       std::chrono::steady_clock::time_point start, end;
       std::chrono::duration<double> duration;
       start = std::chrono::high_resolution_clock::now();
-      //LOSsolver solver(1e-15, 1000);
-      //solver.solve(matrix, b, x);
-      GaussSolver solver;
-      solver.solve(matrix, b, x);
+
+      if (choice == 1) solverlos.solve(matrix, b, x);
+      else if (choice == 2) solvergauss.solve(matrix, b, x);
+      else if (choice == 3) {
+         matrix.convertToProfile();
+         matrix.LUdecomposeProfile();
+         matrix.solveProfileLU(b, x);
+      }
 
       end = std::chrono::high_resolution_clock::now();
       duration = std::chrono::duration<double>(end - start);
