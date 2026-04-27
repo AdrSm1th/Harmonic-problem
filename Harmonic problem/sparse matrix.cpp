@@ -62,34 +62,6 @@ void BlockCSRMatrix::multiply(std::vector<BlockVector> &x, std::vector<BlockVect
 	}
 }
 
-void BlockCSRMatrix::convertToProfile() {
-	std::vector<Block> newAl;
-	std::vector<int> newIa;
-
-	int jm = 0;
-	int ia = 0;
-	for (int i = 0; i < di_.size(); i++) {
-		int end = jm + i;
-		newIa.push_back(ia);
-		for (int j = ia_[i]; jm < end; jm++, j++) {
-			ia++;
-			if (j == ja_[jm]) {
-				newAl.push_back(al_[jm]);
-			}
-			else {
-				Block nullBlock;
-				nullBlock.p_ = 0;
-				nullBlock.c_ = 0;
-				newAl.push_back(nullBlock);
-			}
-		}
-	}
-	newIa.push_back(ia);
-
-	al_ = newAl;
-	ia_ = newIa;
-}
-
 int BlockCSRMatrix::index(int i, int j) const {
 	for (int jm = ia_[i]; jm < ia_[i + 1]; jm++) {
 		if (ja_[jm] == j) {
@@ -99,34 +71,6 @@ int BlockCSRMatrix::index(int i, int j) const {
 	return -1;
 }
 
-void BlockCSRMatrix::getLU() {
-	int n = (int)di_.size();
-	for (int i = 1; i < n; i++) {
-		for (int k = ia_[i]; k < ia_[i + 1]; k++) {
-			//al
-			al_[k] /= di_[ja_[k]];
-
-			for (int j = ja_[k]; j < n; j++) {
-				//di
-				if (j == i) {
-					for (int idx = ia_[j]; idx < ia_[j + 1]; idx++) {
-						if (ja_[idx] == k) {
-							di_[i] -= al_[k] * au_[idx];
-						}
-					}
-				}
-
-				//au
-				for (int idx = ia_[j]; idx < ia_[j]; idx++) {
-					if (ja_[idx] == i) {
-						for (int idx_2 = ia_[j]; idx_2 < ia_[j + 1]; idx_2++) {
-							if (ja_[idx_2] == k) {
-								au_[idx] -= al_[k] * au_[idx_2];
-							}
-						}
-					}
-				}
-			}
-		}
-	}
+int BlockCSRMatrix::getSize() {
+	return di_.size();
 }

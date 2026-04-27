@@ -43,14 +43,12 @@ public:
 	std::vector<Face> getBoundaryFaces() const;
 
 	double f_s(double x, double y, double z) {
-		//return (3 * PI * PI - 1) * sin(PI * x) * sin(PI * y) * sin(PI * z);
-	   //return 0;
-		return -6 - 2 * x * x * z * z;
+		return -coefficients_.omega * coefficients_.omega * coefficients_.chi * (x + y + z);
+		//return -6 * coefficients_.lambda - coefficients_.omega * coefficients_.sigma * (x * x - y * y) - coefficients_.omega * coefficients_.omega * coefficients_.chi * (x * x + y * y + z * z);
 	}
 
 	double f_c(double x, double y, double z) {
-		//return sin(PI * x) * sin(PI * y) * sin(PI * z);
-		//return 0;
-		return 2 * y * y + z * z;
+		return coefficients_.omega * coefficients_.sigma * (x + y + z);
+		//return coefficients_.omega * coefficients_.sigma * (x * x + y * y + z * z) - coefficients_.omega * coefficients_.omega * coefficients_.chi * (x * x - y * y);
 	}
 };
