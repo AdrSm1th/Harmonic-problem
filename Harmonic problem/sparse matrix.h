@@ -32,8 +32,8 @@ public:
 			     p_ * block.c_ + c_ * block.p_);
 	}
 
-	Block operator*(const double &c) const {
-		return Block(p_ * c, c_ * c);
+	Block operator*(const double &scalar) const {
+		return Block(p_ * scalar, c_ * scalar);
 	}
 
 	Block operator*=(const Block &block) {
@@ -88,8 +88,8 @@ public:
 		return BlockVector(p_ + block.p_, c_ + block.c_);
 	}
 
-	BlockVector operator*(double c) const {
-		return BlockVector(p_ * c, c_ * c);
+	BlockVector operator*(double scalar) const {
+		return BlockVector(p_ * scalar, c_ * scalar);
 	}
 };
 
@@ -118,6 +118,10 @@ public:
 	void LUdecomposeProfile();
 	void solveProfileLU(std::vector<BlockVector> &b, std::vector<BlockVector> &x);
 
+	void solveProfileL(const std::vector<BlockVector> &b, std::vector<BlockVector> &y) const;
+	void solveProfileU(const std::vector<BlockVector> &b, std::vector<BlockVector> &x) const;
+	void multiplyProfileU(const std::vector<BlockVector> &x, std::vector<BlockVector> &y) const;
+
 	Block& operator()(int i, int j) {
 		if (i < j) {
 			int idx = index(j, i);
@@ -144,14 +148,14 @@ public:
 		if (i < j) {
 			int idx = index(j, i);
 			if (idx == -1) {
-				return(Block(0, 0));
+				return Block(0, 0);
 			}
 			return au_[idx];
 		}
-		else if (j > i) {
+		else if (i > j) {
 			int idx = index(i, j);
 			if (idx == -1) {
-				return(Block(0, 0));
+				return Block(0, 0);
 			}
 			return al_[idx];
 		}

@@ -41,7 +41,11 @@ void BlockCSRMatrix::changeBlock(int row, int col, Block block) {
 
 void BlockCSRMatrix::multiply(std::vector<BlockVector> &x, std::vector<BlockVector> &y) {
 	int n = (int)di_.size();
-	std::fill(y.begin(), y.end(), BlockVector());
+
+	if ((int)x.size() != n)
+		throw std::runtime_error("Wrong vector size in matrix multiply");
+
+	y.assign(n, BlockVector());
 
 	for (int i = 0; i < n; ++i) {
 		y[i].p_ += di_[i].p_ * x[i].p_ - di_[i].c_ * x[i].c_;
@@ -218,5 +222,92 @@ void BlockCSRMatrix::solveProfileLU(std::vector<BlockVector> &b, std::vector<Blo
 
 		x[i].p_ = (sum.p_ * diag.p_ + sum.c_ * diag.c_) / den;
 		x[i].c_ = (sum.c_ * diag.p_ - sum.p_ * diag.c_) / den;
+	}
+}
+
+void BlockCSRMatrix::solveProfileL(const std::vector<BlockVector> &b,
+	std::vector<BlockVector> &y) const
+{
+	int n = (int)di_.size();
+	y.assign(n, BlockVector());
+
+	for (int i = 0; i < n; i++)
+	{
+		BlockVector sum = b[i];
+		int fc_i = firstCol_[i];
+
+		for (int j = fc_i; j < i; j++)
+		{
+			int idx = ia_profile_[i] + (j - fc_i);
+			Block lij = al_profile_[idx];
+
+			sum.p_ -= lij.p_ * y[j].p_ - lij.c_ * y[j].c_;
+			sum.c_ -= lij.p_ * y[j].c_ + lij.c_ * y[j].p_;
+		}
+
+		y[i] = sum;
+	}
+}
+
+void BlockCSRMatrix::solveProfileU(const std::vector<BlockVector> &b,
+	std::vector<BlockVector> &x) const
+{
+	int n = (int)di_.size();
+
+	x = b;
+
+	for (int i = n - 1; i >= 0; i--)
+	{
+		Block diag = di_[i];
+		double den = diag.p_ * diag.p_ + diag.c_ * diag.c_;
+
+		if (den < 1e-14)
+			throw std::runtime_error("Zero diagonal in U substitution");
+
+		BlockVector xi;
+
+		xi.p_ = (x[i].p_ * diag.p_ + x[i].c_ * diag.c_) / den;
+		xi.c_ = (x[i].c_ * diag.p_ - x[i].p_ * diag.c_) / den;
+
+		x[i] = xi;
+
+		int fc_i = firstCol_[i];
+
+		for (int j = fc_i; j < i; j++)
+		{
+			int idx = ia_profile_[i] + (j - fc_i);
+
+			Block uji = au_profile_[idx];
+
+			x[j].p_ -= uji.p_ * xi.p_ - uji.c_ * xi.c_;
+			x[j].c_ -= uji.c_ * xi.p_ + uji.p_ * xi.c_;
+		}
+	}
+}
+
+void BlockCSRMatrix::multiplyProfileU(const std::vector<BlockVector> &x,
+	std::vector<BlockVector> &y) const
+{
+	int n = (int)di_.size();
+	y.assign(n, BlockVector());
+
+	for (int i = 0; i < n; i++)
+	{
+		Block diag = di_[i];
+
+		y[i].p_ += diag.p_ * x[i].p_ - diag.c_ * x[i].c_;
+		y[i].c_ += diag.c_ * x[i].p_ + diag.p_ * x[i].c_;
+
+		int fc_i = firstCol_[i];
+
+		for (int j = fc_i; j < i; j++)
+		{
+			int idx = ia_profile_[i] + (j - fc_i);
+
+			Block uji = au_profile_[idx];
+
+			y[j].p_ += uji.p_ * x[i].p_ - uji.c_ * x[i].c_;
+			y[j].c_ += uji.c_ * x[i].p_ + uji.p_ * x[i].c_;
+		}
 	}
 }

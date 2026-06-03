@@ -19,3 +19,30 @@ public:
 	LOSsolver(double eps, int maxiter) : eps_(eps), maxiter_(maxiter) {}
 	void solve(BlockCSRMatrix &matrix, std::vector<BlockVector> &b, std::vector<BlockVector> &x);
 };
+
+class BSGSTAB_LUsolver {
+private:
+   double eps_;
+   int maxiter_;
+
+   double dotProduct(const std::vector<BlockVector> &v1,
+      const std::vector<BlockVector> &v2) const;
+
+   double norm(const std::vector<BlockVector> &v) const;
+
+   double relativeResidual(BlockCSRMatrix &matrix,
+      const std::vector<BlockVector> &b,
+      std::vector<BlockVector> &x) const;
+
+   void applyPreconditionedMatrix(BlockCSRMatrix &matrix,
+      BlockCSRMatrix &lu,
+      const std::vector<BlockVector> &v,
+      std::vector<BlockVector> &result) const;
+
+public:
+   BSGSTAB_LUsolver(double eps, int maxiter) : eps_(eps), maxiter_(maxiter) {}
+
+   void solve(BlockCSRMatrix &matrix,
+      std::vector<BlockVector> &b,
+      std::vector<BlockVector> &x);
+};
